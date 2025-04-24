@@ -26,14 +26,16 @@ export async function rankPapersByRelevance(researchQuestion: string, papers: an
   - Abstract 
 `;
   
+const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, // or insert key manually if needed
+        Authorization: `Bearer ${apiKey}`, // or insert key manually if needed
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "gpt-4o", // or gpt-4o-mini
+        model: "gpt-4o", 
         messages: [{ role: "user", content: prompt }],
         temperature: 0.3
       })
