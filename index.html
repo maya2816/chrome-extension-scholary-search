@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ScholarSearch</title>
+    <!-- Add Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Source+Sans+Pro:wght@300;400;600&family=Crimson+Pro:wght@600&display=swap" rel="stylesheet">
 </head>
 
 <!-- ----------------------------------------------------------------------------- -->
@@ -12,92 +16,134 @@
 <style>
     /* Style: Body */
     body {
-        background-color: #f8f9fa;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #e8e7e7;
+        font-family: 'Source Sans Pro', sans-serif;
         margin: 0;
         padding: 0;
-        height: 100vh;
-        width: 100%;
         overflow-x: hidden;
+        color: #545454;
     }
 
     /* Style: Container */
     .container {
-        background-color: #ffffff;
-        padding: 20px;
         width: 100%;
+        height: 100vh;
+        padding: 2.5rem 1.8rem;
         box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        max-width: 600px;
+        margin: 0 auto;
     }
     
     /* Style: Header */
-    .header {
-        font-size: 1.5rem;
-        font-weight: 700;
-        margin-bottom: 20px;
-        color: #1f2937;
+    h1 {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 42px;
+        font-weight: 600;
+        margin-bottom: 3rem;
+        color: #333;
         text-align: center;
+        letter-spacing: 1px;
+    }
+
+    /* Style: Form Section */
+    .form-section {
+        margin-bottom: 2rem;
     }
 
     /* Style: Label */
     label {
         display: block;
-        font-size: 0.95rem;
-        font-weight: 600;
-        margin: 12px 0 6px;
-        color: #1f2937;
+        margin-bottom: 10px;
+        font-weight: 500;
+        font-size: 15px;
+        letter-spacing: 0.3px;
+        color: #666;
     }
 
     /* Style: Label's Input */
     input[type="text"] {
         width: 100%;
-        padding: 12px;
-        border: 1px solid #cbd5e0;
-        border-radius: 8px;
+        padding: 14px 16px;
+        border: 1px solid #c0c0c0;
+        border-radius: 10px;
         background-color: #f9fafb;
-        font-size: 0.95rem;
+        font-family: 'Source Sans Pro', sans-serif;
+        font-size: 15px;
         color: #6b7280;
         box-sizing: border-box;
+        transition: border-color 0.2s ease;
+    }
+
+    input[type="text"]:focus {
+        outline: none;
+        border-color: #666;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
 
     /* Style: Search Button */
     .button-main {
-        width: 100%;
-        padding: 12px;
-        margin-top: 20px;
-        background-color: #1f2937;
-        color: #ffffff;
-        font-size: 1rem;
-        font-weight: 600;
+        padding: 16px;
+        background-color: #6e6b6b;
+        color: white;
+        font-family: 'Source Sans Pro', sans-serif;
+        font-size: 15px;
         border: none;
-        border-radius: 8px;
+        border-radius: 12px;
+        font-weight: 600;
         cursor: pointer;
+        width: 100%;
+        margin-top: 2.5rem;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+    }
+
+    .button-main:hover {
+        background-color: #545454;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
     }
 
     /* Style: Help Button */
     .help-btn {
         position: absolute;
-        top: 10px;
-        right: 10px;
-        width: 30px;
-        height: 30px;
-        background-color: #f3f4f6;
+        top: 16px;
+        right: 16px;
         border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        background-color: #f0f0f0;
         display: flex;
         align-items: center;
         justify-content: center;
         border: 1px solid #d1d5db;
-        font-weight: bold;
+        font-family: 'Crimson Pro', serif;
+        font-weight: 600;
         color: #4b5563;
-        font-size: 1rem;
+        font-size: 18px;
         cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .help-btn:hover {
+        background-color: #e5e5e5;
+        transform: scale(1.05);
     }
 
     /* Style: Footer */
     .footer {
-        margin-top: 20px;
-        font-size: 0.85rem;
-        color: #6b7280;
         text-align: center;
+        margin-top: auto;
+        padding-top: 2rem;
+        font-size: 13px;
+        color: #888;
+        font-weight: 300;
+        letter-spacing: 0.5px;
     }
 </style>
 <!-- ----------------------------------------------------------------------------- -->
@@ -114,15 +160,19 @@
     <!-- UI Preview while React is loading -->
     <div class="container" id="fallbackUI">
         <!-- ---- Title ---- -->
-        <h1 class="header">ScholarSearch</h1>
+        <h1>ScholarSearch</h1>
     
         <!-- ---- Input: Research Query ---- -->
-        <label for="query">Research Query</label>
-        <input type="text" id="query" placeholder="e.g., machine learning applications" disabled />
+        <div class="form-section">
+            <label for="query">Research Query</label>
+            <input type="text" id="query" placeholder="e.g., machine learning applications" disabled />
+        </div>
     
         <!-- ---- Input: Keywords ---- -->
-        <label for="keywords">Keywords</label>
-        <input type="text" id="keywords" placeholder="e.g., neural networks, predictive analysis" disabled />
+        <div class="form-section">
+            <label for="keywords">Keywords</label>
+            <input type="text" id="keywords" placeholder="e.g., neural networks, predictive analysis" disabled />
+        </div>
     
         <!-- ---- Button: Find Papers ---- -->
         <button class="button-main" disabled>FIND PAPERS</button>
