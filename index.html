@@ -3,11 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chrome Extension React/TypeScript Starter</title>
+    <title>ScholarSearch</title>
 </head>
+
+<!-- ----------------------------------------------------------------------------- -->
+<!-- ----------------------------- Style: Custom CSS ----------------------------- -->
+<!-- ----------------------------------------------------------------------------- -->
+<style>
+    /* Style: Body */
+    body {
+        background-color: #f8f9fa;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    /* Style: Container */
+    .container {
+        background-color: #ffffff;
+        padding: 20px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    /* Style: Header */
+    .header {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: #1f2937;
+        text-align: center;
+    }
+
+    /* Style: Label */
+    label {
+        display: block;
+        font-size: 0.95rem;
+        font-weight: 600;
+        margin: 12px 0 6px;
+        color: #1f2937;
+    }
+
+    /* Style: Label's Input */
+    input[type="text"] {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #cbd5e0;
+        border-radius: 8px;
+        background-color: #f9fafb;
+        font-size: 0.95rem;
+        color: #6b7280;
+        box-sizing: border-box;
+    }
+
+    /* Style: Search Button */
+    .button-main {
+        width: 100%;
+        padding: 12px;
+        margin-top: 20px;
+        background-color: #1f2937;
+        color: #ffffff;
+        font-size: 1rem;
+        font-weight: 600;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    /* Style: Help Button */
+    .help-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 30px;
+        height: 30px;
+        background-color: #f3f4f6;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #d1d5db;
+        font-weight: bold;
+        color: #4b5563;
+        font-size: 1rem;
+        cursor: pointer;
+    }
+
+    /* Style: Footer */
+    .footer {
+        margin-top: 20px;
+        font-size: 0.85rem;
+        color: #6b7280;
+        text-align: center;
+    }
+</style>
+<!-- ----------------------------------------------------------------------------- -->
+<!-- ----------------------------------------------------------------------------- -->
+
+
+<!-- ----------------------------------------------------------------------------- -->
+<!-- ----------------------------- Body: HTML ------------------------------------ -->
+<!-- ----------------------------------------------------------------------------- -->
 <body>
-    <!-- This is the entry point for React. -->
-    <div id="root"></div>
-    <script type="module" src="/src/index.tsx"></script>
-</body>
-</html> 
+    <!-- Help button: floating UI -->
+    <div class="help-btn">?</div>
+
+    <!-- UI Preview while React is loading -->
+    <div class="container" id="fallbackUI">
+        <!-- ---- Title ---- -->
+        <h1 class="header">ScholarSearch</h1>
+    
+        <!-- ---- Input: Research Query ---- -->
+        <label for="query">Research Query</label>
+        <input type="text" id="query" placeholder="e.g., machine learning applications" disabled />
+    
+        <!-- ---- Input: Keywords ---- -->
+        <label for="keywords">Keywords</label>
+        <input type="text" id="keywords" placeholder="e.g., neural networks, predictive analysis" disabled />
+    
+        <!-- ---- Button: Find Papers ---- -->
+        <button class="button-main" disabled>FIND PAPERS</button>
+
+        <!-- ---- TODO: You can add a loading GIF here later ---- -->
+        <!-- Example: <img src="assets/loading.gif" alt="Loading..."> -->
+
+        <!-- ---- Footer ---- -->
+        <div class="footer">© 2025 ScholarSearch</div>
+
+        <!-- ---- React App Entry Point ---- -->
+        <div id="root" style="display:none;"></div>
+        <script type="module">
+          // When React is ready, hide fallback UI
+          window.addEventListener('DOMContentLoaded', () => {
+            const checkReact = setInterval(() => {
+              if (document.getElementById('root').children.length > 0) {
+                document.getElementById('fallbackUI').style.display = 'none';
+                document.getElementById('root').style.display = 'block';
+                clearInterval(checkReact);
+              }
+            }, 100);
+          });
+        </script>
+        <script type="module" src="/src/index.tsx"></script>
+      </body>
+      </html>
