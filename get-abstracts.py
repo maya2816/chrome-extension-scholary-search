@@ -1,6 +1,7 @@
 import requests
 
 API_KEY = "ADD API KEY HERE"
+SEARCH_QUERY = "ADD SEARCH QUERY HERE"
 
 def get_top_10_abstracts(query):
     url = "https://api.semanticscholar.org/graph/v1/paper/search"
@@ -30,7 +31,7 @@ def get_top_10_abstracts(query):
 
 # Example usage
 if __name__ == "__main__":
-    query = "cold war in guatemala"
+    query = SEARCH_QUERY
     results = get_top_10_abstracts(query)
 
     for i, paper in enumerate(results, start=1):
