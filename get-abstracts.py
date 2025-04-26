@@ -1,7 +1,13 @@
 import requests
+import os
+from dotenv import load_dotenv
 
-API_KEY = "ADD API KEY HERE"
-SEARCH_QUERY = "ADD SEARCH QUERY HERE"
+# Load .env file
+load_dotenv()
+
+# Get API key and search query from environment
+API_KEY = os.getenv("SEMANTIC_SCHOLAR_API_KEY")
+SEARCH_QUERY = os.getenv("SEARCH_QUERY")
 
 def get_top_10_abstracts(query):
     url = "https://api.semanticscholar.org/graph/v1/paper/search"
