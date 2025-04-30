@@ -28,29 +28,29 @@ function updateKeywordsState(event) {
 function handleFindPaperClick() {
     console.log('FIND PAPER button clicked');
 
-    // Hide the main content and show the loading window
     const mainContent = document.getElementById('fallbackUI');
     const loadingWindow = document.getElementById('loadingWindow');
 
-    // Send user input to the background script
+    // Show loading state
+    loadingWindow.classList.add('show');
+    mainContent.classList.add('hide');
+
     chrome.runtime.sendMessage({
         action: 'performSearch',
         searchData: userInput
     }, (response) => {
         console.log('Received response:', response);
 
-    // Hide loading screen, show main content again
-    loadingWindow.classList.remove('show');
-    mainContent.classList.remove('hide');
+        // Hide loading and show main UI again
+        loadingWindow.classList.remove('show');
+        mainContent.classList.remove('hide');
 
-    if (response && response.success) {
-      // TODO: Display actual search results
-      console.log('Search completed successfully:', response.data);
-    } else {
-      // TODO: Handle error visually
-      console.error('Search failed:', response?.message || 'Unknown error');
-    }
-  });
+        if (response && response.success) {
+            console.log('Search completed successfully:', response.data);
+        } else {
+            console.error('Search failed:', response?.message || 'Unknown error');
+        }
+    });
 }
 
 /**
@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
     // Bind input and button events
     document.getElementById('query').addEventListener('input', updateQueryState);
-    document.getElementById('keywords').addEventListener('input', handleKeywordsChange);
+    document.getElementById('keywords').addEventListener('input', updateKeywordsState);
     document.getElementById('searchBtn').addEventListener('click', handleFindPaperClick);
   
     // Fallback-to-React check

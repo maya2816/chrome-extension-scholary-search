@@ -3,7 +3,6 @@ import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
 import { copyFileSync, mkdirSync, existsSync } from 'fs';
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     react(),
@@ -14,23 +13,20 @@ export default defineConfig({
         if (!existsSync('dist')) {
           mkdirSync('dist', { recursive: true });
         }
-    
+
         // Copy manifest.json
         copyFileSync('manifest.json', 'dist/manifest.json');
-        
-        // Copy background.js
-        copyFileSync('background.js', 'dist/background.js');        
 
-        // Copy images folder (recursive copy not implemented here, 
-        // you may need to enhance this for complex directory structures)
-        if (!existsSync('dist/images')) {
-          mkdirSync('dist/images', { recursive: true });
+        // Copy background.js
+        copyFileSync('background.js', 'dist/background.js');
+        // Ensure images directory exists
+        const imagesPath = 'dist/images';
+        if (!existsSync(imagesPath)) {
+          mkdirSync(imagesPath, { recursive: true });
         }
-        // Copy individual image files
-        copyFileSync('public/images/icon16.png', 'dist/images/icon16.png');
-        copyFileSync('public/images/icon32.png', 'dist/images/icon32.png');
-        copyFileSync('public/images/icon48.png', 'dist/images/icon48.png');
-        copyFileSync('public/images/icon128.png', 'dist/images/icon128.png');
+
+        // ✅ Copy only icon16.png
+        copyFileSync('public/images/icon16.png', `${imagesPath}/icon16.png`);
       }
     }
   ],
@@ -42,4 +38,4 @@ export default defineConfig({
       },
     },
   },
-}); 
+});
