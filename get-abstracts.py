@@ -1,14 +1,26 @@
 import requests
+import os
+from dotenv import load_dotenv
+
+# Load .env file
+load_dotenv()
+
+# Get API key and search query from environment
+API_KEY = os.getenv("SEMANTIC_SCHOLAR_API_KEY")
+SEARCH_QUERY = os.getenv("SEARCH_QUERY")
 
 def get_top_10_abstracts(query):
     url = "https://api.semanticscholar.org/graph/v1/paper/search"
+    headers = {
+        "x-api-key": API_KEY
+    }
     params = {
-        "query": "cold war in guatemala",
+        "query": query,
         "limit": 10,
         "fields": "title,abstract"
     }
 
-    response = requests.get(url, params=params)
+    response = requests.get(url, headers=headers, params=params)
     if response.status_code != 200:
         print(f"Error: {response.status_code} - {response.text}")
         return []
@@ -25,7 +37,7 @@ def get_top_10_abstracts(query):
 
 # Example usage
 if __name__ == "__main__":
-    query = "natural language processing"
+    query = SEARCH_QUERY
     results = get_top_10_abstracts(query)
 
     for i, paper in enumerate(results, start=1):
