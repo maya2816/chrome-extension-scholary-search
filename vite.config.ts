@@ -14,19 +14,23 @@ export default defineConfig({
         if (!existsSync('dist')) {
           mkdirSync('dist', { recursive: true });
         }
-        
+    
         // Copy manifest.json
-        copyFileSync('public/manifest.json', 'dist/manifest.json');
+        copyFileSync('manifest.json', 'dist/manifest.json');
         
         // Copy background.js
-        copyFileSync('public/background.js', 'dist/background.js');
-        
+        copyFileSync('background.js', 'dist/background.js');        
+
         // Copy images folder (recursive copy not implemented here, 
         // you may need to enhance this for complex directory structures)
         if (!existsSync('dist/images')) {
           mkdirSync('dist/images', { recursive: true });
         }
-        // You would need to copy each image individually here
+        // Copy individual image files
+        copyFileSync('public/images/icon16.png', 'dist/images/icon16.png');
+        copyFileSync('public/images/icon32.png', 'dist/images/icon32.png');
+        copyFileSync('public/images/icon48.png', 'dist/images/icon48.png');
+        copyFileSync('public/images/icon128.png', 'dist/images/icon128.png');
       }
     }
   ],

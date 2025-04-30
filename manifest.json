@@ -22,7 +22,7 @@
     "128": "public/images/icon128.png"
   },
   "side_panel": {
-    "default_path": "public/index.html"
+    "default_path": "index.html"
   },
   "background": {
     "service_worker": "background.js"
