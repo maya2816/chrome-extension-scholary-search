@@ -1,10 +1,10 @@
 // background.js
 /**
  * Background script for the Chrome extension.
- *  - Initiates Extension
  *  - Listens for search requests from the side panel UI.
- *  - Stores search input in local Chrome storage.
- *  - Calls Flask server with user query and returns results to UI.
+ *  - Sends user input to Semantic Scholar server (Flask).
+ *  - Sends returned papers to OpenAI backend (Node).
+ *  - Sends ranked results back to the side panel.
  */
 
 // Trigger side panel when extension icon is clicked
@@ -15,62 +15,70 @@ chrome.action.onClicked.addListener((tab) => {
 // Automatically open side panel on icon click
 chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
 
-// Listen for messages from the side panel
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'performSearch') {
     console.log('📥 Received search request:', request.searchData);
 
-    // Save search data to local storage for record-keeping or recall
+    const query = request.searchData.query;
+    const keywords = request.searchData.keywords;
+
+    // Save to chrome.storage
     chrome.storage.local.set({
-      'scholarSearchData': {
-        query: request.searchData.query,
-        keywords: request.searchData.keywords,
+      scholarSearchData: {
+        query,
+        keywords,
         timestamp: new Date().toISOString()
       }
-    }, () => {
-      console.log('✅ Search data saved to chrome.storage.local');
-
-      // Send POST request to Flask server
-      fetch('http://localhost:5000/search', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          query: request.searchData.query,
-          keywords: request.searchData.keywords
-        })
-      })
-        .then(response => response.json())
-        .then(data => {
-          if (data.results) {
-            // Server responded with data
-            console.log('✅ Received results from Flask:', data.results);
-            sendResponse({
-              success: true,
-              message: 'Search completed successfully',
-              data: data.results
-            });
-          } else {
-            // Server response did not include expected results
-            console.warn('Flask response missing "results" field.');
-            sendResponse({
-              success: false,
-              message: 'No results returned from backend.'
-            });
-          }
-        })
-        .catch(error => {
-          // Network or server error
-          console.error('❌ Error calling Flask server:', error);
-          sendResponse({
-            success: false,
-            message: 'Error contacting backend: ' + error.message
-          });
+    }, async () => {
+      try {
+        // STEP 1: Fetch papers from Semantic Scholar (Flask backend)
+        const semanticRes = await fetch('http://localhost:5000/search', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query, keywords })
         });
+        const semanticData = await semanticRes.json();
+
+        if (!semanticData.results) {
+          throw new Error('Semantic Scholar server returned no results.');
+        }
+
+        console.log('✅ Got papers from Flask:', semanticData.results);
+
+        // STEP 2: Send papers + research question to OpenAI backend
+        const openaiRes = await fetch('http://localhost:4000/api/rank', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            researchQuestion: query,
+            papers: semanticData.results
+          })
+        });
+        const openaiData = await openaiRes.json();
+
+        if (!openaiData.result) {
+          throw new Error('OpenAI server returned no result.');
+        }
+
+        console.log('✅ Got ranked response from OpenAI:', openaiData.result);
+
+        // STEP 3: Send result to side panel
+        chrome.runtime.sendMessage({
+          action: 'searchResults',
+          results: openaiData.result
+        });
+
+        sendResponse({ success: true }); // Response for original message
+      } catch (error) {
+        console.error('❌ Error during full pipeline:', error);
+        sendResponse({
+          success: false,
+          message: error.message
+        });
+      }
     });
 
-    // Keep message channel open for async fetch
+    // Keep async channel open
     return true;
   }
 });
