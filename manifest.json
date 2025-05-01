@@ -4,7 +4,12 @@
   "version": "1.0",
   "description": "Search Semantic Scholar and summarize with OpenAI.",
   "offline_enabled": true,
-  "permissions": ["storage", "activeTab", "contextMenus"],
+  "permissions": [
+    "storage",
+    "sidePanel",
+    "activeTab",
+    "contextMenus"
+  ],
   "host_permissions": [
     "https://api.semanticscholar.org/*",
     "https://api.openai.com/*"
@@ -14,5 +19,18 @@
   },
   "action": {
     "default_popup": "index.html"
-  }
+  },
+  "side_panel": {
+    "default_path": "index.html"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "scripts/panel.js",
+        "images/*.png",
+        "images/*.gif"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }
