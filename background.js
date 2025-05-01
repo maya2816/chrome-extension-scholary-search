@@ -1,84 +1,57 @@
-// background.js
-/**
- * Background script for the Chrome extension.
- *  - Listens for search requests from the side panel UI.
- *  - Sends user input to Semantic Scholar server (Flask).
- *  - Sends returned papers to OpenAI backend (Node).
- *  - Sends ranked results back to the side panel.
- */
+const OPENAI_API_KEY = import.meta.env.OPENAI_API_KEY;
+const SS_API_KEY     = import.meta.env.SEMANTIC_SCHOLAR_API_KEY;
 
-// Trigger side panel when extension icon is clicked
-chrome.action.onClicked.addListener((tab) => {
-  chrome.sidePanel.open({ windowId: tab.windowId });
-});
-
-// Automatically open side panel on icon click
-chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
-
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
   if (request.action === 'performSearch') {
-    console.log('📥 Received search request:', request.searchData);
+    const { query, keywords } = request.searchData;
+    try {
+      // 1) Fetch top 10 papers from Semantic Scholar
+      const ssUrl = `https://api.semanticscholar.org/graph/v1/paper/search?query=${encodeURIComponent(query)}&limit=10&fields=title,abstract,url,authors`;
+      const ssRes = await fetch(ssUrl, {
+        headers: { 'x-api-key': SS_API_KEY }
+      });
+      const ssJson = await ssRes.json();
+      const papers = ssJson.data.map(p => ({
+        title: p.title,
+        url: p.url,
+        authors: p.authors?.map(a => a.name) || [],
+        abstract: p.abstract
+      }));
 
-    const query = request.searchData.query;
-    const keywords = request.searchData.keywords;
+      // 2) Call OpenAI to rank them
+      const formatted = papers.map((p, i) =>
+        `Paper ${i + 1}:
+Title: ${p.title}
+Authors: ${p.authors.join(', ')}
+URL: ${p.url}
+Abstract: ${p.abstract}`
+      ).join('\n\n');
 
-    // Save to chrome.storage
-    chrome.storage.local.set({
-      scholarSearchData: {
-        query,
-        keywords,
-        timestamp: new Date().toISOString()
-      }
-    }, async () => {
-      try {
-        // STEP 1: Fetch papers from Semantic Scholar (Flask backend)
-        const semanticRes = await fetch('http://localhost:5000/search', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query, keywords })
-        });
-        const semanticData = await semanticRes.json();
+      const prompt = `Research Question: "${query}"
 
-        if (!semanticData.results) {
-          throw new Error('Semantic Scholar server returned no results.');
-        }
+Below are abstracts of 10 research papers related to this question.
+Please assign a relevance score from 0.0 to 1.0 (1.0 = highly relevant). Return a JSON array of objects with keys \"title\", \"score\", and \"url\".\n\n${formatted}`;
 
-        console.log('✅ Got papers from Flask:', semanticData.results);
+      const oaRes = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${OPENAI_API_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o',
+          messages: [{ role: 'user', content: prompt }],
+          temperature: 0.3
+        })
+      });
+      const oaJson = await oaRes.json();
+      const result = JSON.parse(oaJson.choices[0].message.content.trim());
 
-        // STEP 2: Send papers + research question to OpenAI backend
-        const openaiRes = await fetch('http://localhost:4000/api/rank', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            researchQuestion: query,
-            papers: semanticData.results
-          })
-        });
-        const openaiData = await openaiRes.json();
-
-        if (!openaiData.result) {
-          throw new Error('OpenAI server returned no result.');
-        }
-
-        console.log('✅ Got ranked response from OpenAI:', openaiData.result);
-
-        // STEP 3: Send result to side panel
-        chrome.runtime.sendMessage({
-          action: 'searchResults',
-          results: openaiData.result
-        });
-
-        sendResponse({ success: true }); // Response for original message
-      } catch (error) {
-        console.error('❌ Error during full pipeline:', error);
-        sendResponse({
-          success: false,
-          message: error.message
-        });
-      }
-    });
-
-    // Keep async channel open
+      sendResponse({ success: true, data: result });
+    } catch (err) {
+      console.error(err);
+      sendResponse({ success: false, message: err.message });
+    }
     return true;
   }
 });
