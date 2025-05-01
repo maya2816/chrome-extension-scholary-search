@@ -36,9 +36,9 @@ def get_top_10_abstracts(query):
     return abstracts
 
 # Example usage
+import json
+
 if __name__ == "__main__":
     query = SEARCH_QUERY
     results = get_top_10_abstracts(query)
-
-    for i, paper in enumerate(results, start=1):
-        print(f"\nPaper {i}: {paper['title']}\nAbstract: {paper['abstract']}\n")
+    print(json.dumps(results)) 
