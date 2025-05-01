@@ -9,8 +9,8 @@ let userInput = {
 };
 
 /**
-* Function to update the 'query' state when user types
-is */
+ * Function to update the 'query' state when user types
+ */
 function updateQueryState(event) {
     userInput.query = event.target.value;
     console.log('User query updated:', userInput.query);
@@ -37,28 +37,12 @@ function handleFindPaperClick() {
     loadingWindow.classList.add('show');
     mainContent.classList.add('hide');
 
-    // Simulate loading delay (!!!! Replace this when backend is connected!!!!)
+    // Simulated delay (REPLACE with backend call when ready)
     setTimeout(() => {
-        chrome.runtime.sendMessage(
-            {
-                action: 'performSearch',
-                searchData: userInput
-            },
-            (response) => {
-                console.log('Received response:', response);
-
-                // Hide loading and show main UI again
-                loadingWindow.classList.remove('show');
-                mainContent.classList.remove('hide');
-
-                if (response && response.success) {
-                    console.log('Search completed successfully:', response.data);
-                } else {
-                    console.error('Search failed:', response?.message || 'Unknown error');
-                }
-            }
-        );
-    }, 5000); // 🔁 Replace with backend-completion logic when available
+        // 🔁 You can replace this logic with an async fetch to backend
+        // After 5 seconds, navigate to the results page
+        window.location.href = 'results.html';
+    }, 5000);
 }
 
 /**
