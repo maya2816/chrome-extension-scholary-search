@@ -1,65 +1,83 @@
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
 import { copyFileSync, mkdirSync, existsSync, readdirSync } from 'fs';
 
 // https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [
-    react(),
-    {
-      name: 'copy-extension-assets',
-      buildEnd() {
-        // Ensure dist directory exists
-        if (!existsSync('dist')) {
-          mkdirSync('dist', { recursive: true });
-        }
+export default defineConfig(({ mode }) => {
+  // load environment variables prefixed with VITE_
+  const env = loadEnv(mode, process.cwd(), '');
 
-        // Copy manifest.json from root
-        copyFileSync('manifest.json', 'dist/manifest.json');
+  return {
+    plugins: [
+      react(),
+      {
+        name: 'copy-extension-assets',
+        buildEnd() {
+          // Ensure dist directory exists
+          if (!existsSync('dist')) {
+            mkdirSync('dist', { recursive: true });
+          }
 
-        // Copy background.js from root
-        copyFileSync('background.js', 'dist/background.js');
+          // Copy manifest.json from root
+          copyFileSync('manifest.json', 'dist/manifest.json');
 
-        // Copy /public/images/ to /dist/images/
-        const sourceImagesPath = 'public/images';
-        const targetImagesPath = 'dist/images';
+          // Copy background.js from root
+          copyFileSync('background.js', 'dist/background.js');
 
-        if (!existsSync(targetImagesPath)) {
-          mkdirSync(targetImagesPath, { recursive: true });
-        }
+          // Copy /public/images/ to /dist/images/
+          const sourceImagesPath = 'public/images';
+          const targetImagesPath = 'dist/images';
 
-        if (existsSync(sourceImagesPath)) {
-          const files = readdirSync(sourceImagesPath);
-          files.forEach(file => {
-            copyFileSync(`${sourceImagesPath}/${file}`, `${targetImagesPath}/${file}`);
-          });
-        }
+          if (!existsSync(targetImagesPath)) {
+            mkdirSync(targetImagesPath, { recursive: true });
+          }
 
-        // Copy scripts folder (e.g., panel.js)
-        const sourceScriptsPath = 'public/scripts';
-        const targetScriptsPath = 'dist/scripts';
+          if (existsSync(sourceImagesPath)) {
+            const files = readdirSync(sourceImagesPath);
+            files.forEach(file => {
+              copyFileSync(
+                `${sourceImagesPath}/${file}`,
+                `${targetImagesPath}/${file}`
+              );
+            });
+          }
 
-        if (!existsSync(targetScriptsPath)) {
-          mkdirSync(targetScriptsPath, { recursive: true });
-        }
+          // Copy scripts folder (e.g., panel.js)
+          const sourceScriptsPath = 'public/scripts';
+          const targetScriptsPath = 'dist/scripts';
 
-        if (existsSync(sourceScriptsPath)) {
-          const files = readdirSync(sourceScriptsPath);
-          files.forEach(file => {
-            copyFileSync(`${sourceScriptsPath}/${file}`, `${targetScriptsPath}/${file}`);
-          });
+          if (!existsSync(targetScriptsPath)) {
+            mkdirSync(targetScriptsPath, { recursive: true });
+          }
+
+          if (existsSync(sourceScriptsPath)) {
+            const files = readdirSync(sourceScriptsPath);
+            files.forEach(file => {
+              copyFileSync(
+                `${sourceScriptsPath}/${file}`,
+                `${targetScriptsPath}/${file}`
+              );
+            });
+          }
         }
       }
-    }
-  ],
-  build: {
-    outDir: 'dist',
-    rollupOptions: {
-      input: {
-        main: resolve(__dirname, 'index.html'),
-        results: resolve(__dirname, 'results.html'),
-      },
+    ],
+    define: {
+      'import.meta.env.VITE_OPENAI_API_KEY': JSON.stringify(env.VITE_OPENAI_API_KEY),
+      'import.meta.env.VITE_SEMANTIC_SCHOLAR_API_KEY': JSON.stringify(env.VITE_SEMANTIC_SCHOLAR_API_KEY)
     },
-  },
+    build: {
+      outDir: 'dist',
+      rollupOptions: {
+        input: {
+          main: resolve(__dirname, 'index.html'),
+          results: resolve(__dirname, 'results.html'),
+        },
+        output: {
+          entryFileNames: '[name].js'
+        }
+      }
+    },
+  };
 });
