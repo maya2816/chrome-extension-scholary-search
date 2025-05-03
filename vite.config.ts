@@ -73,6 +73,7 @@ export default defineConfig(({ mode }) => {
         input: {
           main: resolve(__dirname, 'index.html'),
           results: resolve(__dirname, 'results.html'),
+          background: resolve(__dirname, 'background.js')
         },
         output: {
           entryFileNames: '[name].js'
