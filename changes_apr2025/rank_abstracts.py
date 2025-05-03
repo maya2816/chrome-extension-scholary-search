@@ -1,33 +1,49 @@
-from openai import OpenAI
 import os
+import json
+from openai import OpenAI
 from dotenv import load_dotenv
 
 load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
+print("✅ rank_abstracts_with_openai is available")
+
 def rank_abstracts_with_openai(abstracts, keywords):
     prompt = (
-        "You are a research assistant. Given a set of abstracts and keywords, "
-        "rank the abstracts from most to least relevant based on how closely they relate to the keywords.\n\n"
+        "You are a research assistant. Given a list of paper abstracts and a set of keywords, "
+        "rank the abstracts from most to least relevant to the keywords. "
+        "Return ONLY a JSON array of numbers representing the ranked abstract indices.\n\n"
         f"Keywords: {', '.join(keywords)}\n\n"
-        "Here are the abstracts:\n"
+        "Abstracts:\n"
     )
 
     for i, paper in enumerate(abstracts, 1):
         prompt += f"{i}. {paper['title']}\n{paper['abstract']}\n\n"
 
-    prompt += "Return a list of abstract numbers in ranked order of relevance as a JSON array."
-
-    response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=[{"role": "user", "content": prompt}],
-        temperature=0.3
+    prompt += (
+        "\nReturn the ranked order as a JSON array of numbers, like this: [3, 1, 2, ...]. "
+        "Do not include any explanation or notes—just the array."
     )
 
-    content = response.choices[0].message.content
     try:
-        ranked_indices = eval(content)  # Expected format: [3, 1, 2, ...]
-        return [abstracts[i - 1] for i in ranked_indices]
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.3
+        )
+
+        content = response.choices[0].message.content.strip()
+
+        # Try to parse as JSON
+        ranked_indices = json.loads(content)
+
+        # Ensure it's a list of numbers
+        if isinstance(ranked_indices, list) and all(isinstance(i, int) for i in ranked_indices):
+            return [abstracts[i - 1] for i in ranked_indices if 1 <= i <= len(abstracts)]
+
     except Exception as e:
-        print("Failed to parse OpenAI response:", content)
-        return abstracts
+        print("⚠️ OpenAI Ranking Failed:", e)
+        print("Response content:\n", content)
+
+    # Fallback: return in original order
+    return abstracts
