@@ -17,7 +17,7 @@
       margin: 0;
       padding: 0;
       overflow-x: hidden;
-      color: #545454;
+      color: #222;
     }
 
     .container {
@@ -223,6 +223,22 @@
       margin-bottom: 20px;
     }
 
+    #root {
+      display: block;
+      margin-top: 2rem;
+    }
+
+    .result-card {
+      background-color: white;
+      color: black;
+      padding: 16px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      font-size: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      border: 1px solid #ccc;
+    }    
+
     /* 👇 Add this new rule */
     #fallbackUI.hide {
       display: none;
@@ -273,9 +289,9 @@
 
     <div class="footer">© 2025 ScholarSearch</div>
 
-    <div id="root" style="display:none;"></div>
-
     <script src="/scripts/panel.js"></script>
   </div>
+
+  <div id="root" style="display:none;"></div>
 </body>
 </html>
