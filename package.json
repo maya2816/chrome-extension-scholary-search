@@ -3,27 +3,26 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-  "@testing-library/user-event": "^13.5.0",
-  "@types/node": "^20.0.0",
-  "@types/react": "^18.0.27",
-  "@types/react-dom": "^18.0.10",
-  "react": "^18.2.0",
-  "react-dom": "^18.2.0",
-  "typescript": "^4.9.4",
-  "web-vitals": "^2.1.4",
-  "cors": "^2.8.5",
-  "dotenv": "^16.5.0",
-  "express": "^5.1.0",
-  "node-fetch": "^3.3.2"
-},
+    "@testing-library/user-event": "^13.5.0",
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.0.27",
+    "@types/react-dom": "^18.0.10",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "node-fetch": "^3.3.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "web-vitals": "^2.1.4"
+  },
   "scripts": {
-  "dev": "vite",
-  "build": "tsc && vite build",
-  "preview": "vite preview",
-  "test": "jest --watchAll --detectOpenHandles",
-  "coverage": "jest --coverage",
-  "start": "node server.js"
-},
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "jest --watchAll --detectOpenHandles",
+    "coverage": "jest --coverage",
+    "start": "node server.js"
+  },
   "devDependencies": {
     "@babel/core": "^7.24.0",
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
@@ -44,6 +43,7 @@
     "sinon": "^17.0.1",
     "sinon-chrome": "^3.0.1",
     "ts-jest": "^29.1.2",
+    "typescript": "^5.8.3",
     "vite": "^5.0.10"
   },
   "babel": {
@@ -59,7 +59,9 @@
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "jsdom",
-    "setupFilesAfterEnv": ["<rootDir>/src/setupTests.ts"],
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/setupTests.ts"
+    ],
     "transform": {
       "^.+\\.(js|jsx|ts|tsx)$": "ts-jest",
       "^.+\\.css$": "<rootDir>/src/__mocks__/styleMock.js"
@@ -67,11 +69,21 @@
     "moduleNameMapper": {
       "\\.(css|less)$": "<rootDir>/src/__mocks__/styleMock.js"
     },
-    "coverageReporters": ["text", "html"],
+    "coverageReporters": [
+      "text",
+      "html"
+    ],
     "testMatch": [
       "**/__tests__/**/*.[jt]s?(x)",
       "**/?(*.)+(spec|test).[jt]s?(x)"
     ],
-    "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"]
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
   }
 }

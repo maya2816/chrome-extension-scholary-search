@@ -18,9 +18,6 @@
     "service_worker": "background.js",
     "type": "module"
   },
-  "action": {
-    "default_popup": "index.html"
-  },
   "side_panel": {
     "default_path": "index.html"
   },
