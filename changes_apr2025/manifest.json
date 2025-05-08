@@ -21,8 +21,8 @@
   {
     "resources": [
       "scripts/panel.js",
-      "images/*.png",
-      "images/*.gif"
+      "public/images/*.png",
+      "public/images/*.gif"
     ],
     "matches": ["<all_urls>"]
   }
