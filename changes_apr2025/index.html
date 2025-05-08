@@ -9,8 +9,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Source+Sans+Pro:wght@300;400;600&family=Crimson+Pro:wght@600&display=swap" rel="stylesheet">
+<!-- Lottie Player Script -->
 
-  <style>
+<script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+  
+<style>
     body {
       background-color: #e8e7e7;
       font-family: 'Source Sans Pro', sans-serif;
@@ -247,15 +250,18 @@
 </head>
 
 <body>
-<!-- Loading Window -->
+<!-- Loading Window with Lottie animation -->
 <div id="loadingWindow" class="loading-window">
-    <img
-     src="images/loading.gif" alt="Loading..." />
-      alt="Loading..."
-      style="width: 200px; height: 200px;"
-    />
-    <h2>Finding relevant papers...</h2>
-  </div>
+  <dotlottie-player
+    src="https://lottie.host/eabf5c37-6358-496c-bb69-a2290a17843d/QWChlvJUjg.lottie"
+    background="transparent"
+    speed="1"
+    style="width: 300px; height: 300px"
+    loop
+    autoplay
+  ></dotlottie-player>
+  <h2>Finding relevant papers...</h2>
+</div>
 
   <!-- Help Modal -->
   <div id="helpModal" class="modal">
