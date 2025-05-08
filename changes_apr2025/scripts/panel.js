@@ -38,9 +38,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
           if (
             !response ||
-            !response.results ||
-            !Array.isArray(response.results) ||
-            response.results.length === 0
+            !response.data ||
+            !Array.isArray(response.data) ||
+            response.data.length === 0
           ) {
             root.innerHTML = "<p>❌ No results found or there was an error.</p>";
             root.style.display = "block";
@@ -48,12 +48,12 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
           }
 
-          response.results.forEach((paper, i) => {
+          response.data.forEach((paper, i) => {
             const el = document.createElement("div");
             el.className = "result-card";
             el.innerHTML = `
               <h3>Rank ${i + 1}: ${paper.title}</h3>
-              <p><strong>Score:</strong> ${paper.score}</p>
+              ${paper.score ? `<p><strong>Score:</strong> ${paper.score}</p>` : ""}
               <p><strong>Abstract:</strong> ${paper.abstract}</p>
               <a href="${paper.url}" target="_blank">🔗 View Paper</a>
               <hr />
