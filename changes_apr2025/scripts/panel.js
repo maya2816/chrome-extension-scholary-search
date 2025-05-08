@@ -1,6 +1,5 @@
 // panel.js
-// Handles user input, search requests, UI display, and modal controls
-
+// Handles user input, search requests, UI display, collapsible abstracts, and modal controls
 document.addEventListener("DOMContentLoaded", () => {
   console.log("📦 DOM fully loaded");
 
@@ -36,12 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
           console.log("📨 Panel received response:", response);
           loadingWindow.classList.remove("show");
 
-          if (
-            !response ||
-            !response.data ||
-            !Array.isArray(response.data) ||
-            response.data.length === 0
-          ) {
+          if (!response || !response.data || !Array.isArray(response.data) || response.data.length === 0) {
             root.innerHTML = "<p>❌ No results found or there was an error.</p>";
             root.style.display = "block";
             fallbackUI.style.display = "none";
@@ -51,14 +45,27 @@ document.addEventListener("DOMContentLoaded", () => {
           response.data.forEach((paper, i) => {
             const el = document.createElement("div");
             el.className = "result-card";
+            const abstractId = `abstract-${i}`;
+            const toggleBtnId = `toggle-btn-${i}`;
+
             el.innerHTML = `
               <h3>Rank ${i + 1}: ${paper.title}</h3>
               ${paper.score ? `<p><strong>Score:</strong> ${paper.score}</p>` : ""}
-              <p><strong>Abstract:</strong> ${paper.abstract}</p>
+              <div id="${abstractId}" class="abstract collapsed">${paper.abstract}</div>
+              <button id="${toggleBtnId}" class="toggle-btn">Show More</button>
               <a href="${paper.url}" target="_blank">🔗 View Paper</a>
               <hr />
             `;
+
             root.appendChild(el);
+
+            const toggleBtn = document.getElementById(toggleBtnId);
+            const abstractDiv = document.getElementById(abstractId);
+
+            toggleBtn.addEventListener("click", () => {
+              const isCollapsed = abstractDiv.classList.toggle("collapsed");
+              toggleBtn.textContent = isCollapsed ? "Show More" : "Show Less";
+            });
           });
 
           root.style.display = "block";
