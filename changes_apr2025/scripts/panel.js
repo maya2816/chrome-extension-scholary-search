@@ -1,9 +1,4 @@
-// panel.js
-// Handles user input, search requests, UI display, and modal controls
-
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("📦 DOM fully loaded");
-
   const searchBtn = document.getElementById("searchBtn");
   const loadingWindow = document.getElementById("loadingWindow");
   const root = document.getElementById("root");
@@ -24,7 +19,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      console.log("🧠 Sending search:", { query, keywords });
       loadingWindow.classList.add("show");
       root.innerHTML = "";
 
@@ -35,14 +29,8 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         (response) => {
           loadingWindow.classList.remove("show");
-          console.log("📨 Panel received response:", response);
 
-          if (
-            !response ||
-            !response.data ||
-            !Array.isArray(response.data) ||
-            response.data.length === 0
-          ) {
+          if (!response || !Array.isArray(response.data) || response.data.length === 0) {
             root.innerHTML = "<p>❌ No results found or there was an error.</p>";
             root.style.display = "block";
             fallbackUI.style.display = "none";
@@ -50,11 +38,20 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
           }
 
+          root.innerHTML = ""; // Clear previous results
+
+          const summaryCard = document.createElement("div");
+          summaryCard.className = "summary-card";
+          summaryCard.innerHTML = `
+            <p><strong>Query:</strong> ${query}</p>
+            <p><strong>Keywords:</strong> ${keywords.join(", ")}</p>
+          `;
+          root.appendChild(summaryCard);
+
           response.data.forEach((paper, i) => {
             const el = document.createElement("div");
             el.className = "result-card";
 
-            // Create collapsible abstract block
             const shortAbstract = paper.abstract.slice(0, 250);
             const isLong = paper.abstract.length > 250;
 
@@ -64,12 +61,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 ${paper.score ? `<p><strong>Score:</strong> ${paper.score}</p>` : ""}
                 <a href="${paper.url}" target="_blank" style="font-size: 14px;">🔗 View</a>
               </div>
+              <p><em>Summarized Abstract:</em></p>
               <p class="abstract-text">${shortAbstract}${isLong ? "..." : ""}</p>
               ${isLong ? `<button class="toggle-abstract">Show More</button>` : ""}
               <hr />
             `;
 
-            // Add toggle behavior
             if (isLong) {
               const btn = el.querySelector(".toggle-abstract");
               const p = el.querySelector(".abstract-text");
@@ -84,21 +81,23 @@ document.addEventListener("DOMContentLoaded", () => {
             root.appendChild(el);
           });
 
-          root.style.display = "block";
           fallbackUI.style.display = "none";
+          root.style.display = "block";
           backBtn.style.display = "block";
         }
       );
     });
   }
 
-  // 🔙 Handle Back to Search
   if (backBtn) {
     backBtn.addEventListener("click", () => {
       fallbackUI.style.display = "block";
       root.innerHTML = "";
       root.style.display = "none";
       backBtn.style.display = "none";
+      document.getElementById("query").value = "";
+      document.getElementById("keywords").value = "";
+      window.scrollTo({ top: 0, behavior: "smooth" });
     });
   }
 
@@ -108,23 +107,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const closeModalBtn = document.getElementById("closeModal");
 
   if (openModalBtn && helpModal) {
-    openModalBtn.addEventListener("click", () => {
-      helpModal.classList.add("show");
-      console.log("📖 Help modal opened");
-    });
+    openModalBtn.addEventListener("click", () => helpModal.classList.add("show"));
   }
 
   if (closeModalBtn && helpModal) {
-    closeModalBtn.addEventListener("click", () => {
-      helpModal.classList.remove("show");
-      console.log("📖 Help modal closed");
-    });
+    closeModalBtn.addEventListener("click", () => helpModal.classList.remove("show"));
   }
 
   window.addEventListener("click", (event) => {
-    if (event.target === helpModal) {
-      helpModal.classList.remove("show");
-    }
+    if (event.target === helpModal) helpModal.classList.remove("show");
   });
 
   document.addEventListener("keydown", (event) => {
