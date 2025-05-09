@@ -14,7 +14,7 @@ def summarize_abstract(abstract):
             model="gpt-3.5-turbo",
             messages=[{
                 "role": "user",
-                "content": f"Summarize the following abstract in 2-3 concise sentences:\n\n{abstract}"
+                "content": f"Summarize the following abstract in 4-5 concise sentences, capturing as much detail as possible:\n\n{abstract}"
             }],
             temperature=0.5
         )
@@ -48,7 +48,7 @@ def rank_abstracts_with_openai(abstracts, keywords):
         "Here are the abstracts. Use the given URLs as-is:\n"
     )
 
-    for i, paper in enumerate(abstracts, 1):
+    for i, paper in enumerate(summarized, 1):
         prompt += (
             f"{i}. Title: {paper['title']}\n"
             f"Abstract: {paper['abstract']}\n"

@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const loadingWindow = document.getElementById("loadingWindow");
   const root = document.getElementById("root");
   const fallbackUI = document.getElementById("fallbackUI");
+  const backBtn = document.getElementById("backBtn");
 
   if (searchBtn) {
     searchBtn.addEventListener("click", () => {
@@ -33,8 +34,8 @@ document.addEventListener("DOMContentLoaded", () => {
           searchData: { query, keywords },
         },
         (response) => {
-          console.log("📨 Panel received response:", response);
           loadingWindow.classList.remove("show");
+          console.log("📨 Panel received response:", response);
 
           if (
             !response ||
@@ -45,6 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
             root.innerHTML = "<p>❌ No results found or there was an error.</p>";
             root.style.display = "block";
             fallbackUI.style.display = "none";
+            backBtn.style.display = "block";
             return;
           }
 
@@ -52,43 +54,51 @@ document.addEventListener("DOMContentLoaded", () => {
             const el = document.createElement("div");
             el.className = "result-card";
 
-            const shortAbstract = paper.abstract.slice(0, 200) + "...";
-            const fullAbstract = paper.abstract;
+            // Create collapsible abstract block
+            const shortAbstract = paper.abstract.slice(0, 250);
+            const isLong = paper.abstract.length > 250;
 
             el.innerHTML = `
               <h3>Rank ${i + 1}: ${paper.title}</h3>
-              ${
-                paper.score
-                  ? `
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <p style="margin: 0;"><strong>Score:</strong> ${paper.score}</p>
-                  <a href="${paper.url}" target="_blank" style="text-decoration: none; font-size: 14px; color: #007bff;">🔗 View Paper</a>
-                </div>
-                `
-                  : ""
-              }
-              <p class="abstract-text">${shortAbstract}</p>
-              <button class="toggle-btn" style="margin-top: 8px; font-size: 14px; background: none; color: #007bff; border: none; cursor: pointer; padding: 0;">Show More</button>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                ${paper.score ? `<p><strong>Score:</strong> ${paper.score}</p>` : ""}
+                <a href="${paper.url}" target="_blank" style="font-size: 14px;">🔗 View</a>
+              </div>
+              <p class="abstract-text">${shortAbstract}${isLong ? "..." : ""}</p>
+              ${isLong ? `<button class="toggle-abstract">Show More</button>` : ""}
               <hr />
             `;
 
-            const toggleBtn = el.querySelector(".toggle-btn");
-            const abstractText = el.querySelector(".abstract-text");
-            let expanded = false;
-
-            toggleBtn.addEventListener("click", () => {
-              expanded = !expanded;
-              abstractText.textContent = expanded ? fullAbstract : shortAbstract;
-              toggleBtn.textContent = expanded ? "Show Less" : "Show More";
-            });
+            // Add toggle behavior
+            if (isLong) {
+              const btn = el.querySelector(".toggle-abstract");
+              const p = el.querySelector(".abstract-text");
+              let expanded = false;
+              btn.addEventListener("click", () => {
+                expanded = !expanded;
+                p.textContent = expanded ? paper.abstract : shortAbstract + "...";
+                btn.textContent = expanded ? "Show Less" : "Show More";
+              });
+            }
 
             root.appendChild(el);
           });
 
           root.style.display = "block";
           fallbackUI.style.display = "none";
+          backBtn.style.display = "block";
         }
       );
+    });
+  }
+
+  // 🔙 Handle Back to Search
+  if (backBtn) {
+    backBtn.addEventListener("click", () => {
+      fallbackUI.style.display = "block";
+      root.innerHTML = "";
+      root.style.display = "none";
+      backBtn.style.display = "none";
     });
   }
 
