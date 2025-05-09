@@ -15,10 +15,10 @@ def rank_abstracts_with_openai(abstracts, keywords):
         "Return a JSON array sorted from highest to lowest score, where each object includes:\n"
         "- 'title'\n"
         "- 'abstract'\n"
-        "- 'url'\n"
+        "- 'url' (exactly as provided — do not change or fabricate it)\n\n"
         "- 'score'\n\n"
         f"Keywords: {', '.join(keywords)}\n\n"
-        "Here are the abstracts:\n"
+        "Here are the abstracts. Use the given URLs as-is:\n"
     )
 
     for i, paper in enumerate(abstracts, 1):
