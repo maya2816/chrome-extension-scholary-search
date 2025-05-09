@@ -14,11 +14,11 @@ def summarize_abstract(abstract):
             model="gpt-3.5-turbo",
             messages=[{
                 "role": "user",
-                "content": f"Summarize the following academic abstract in 4–5 concise sentences. "
-                    "Do not refer to the abstract, the paper, or the authors. "
-                    "Avoid phrases like 'this paper explores' or 'the authors discuss.' "
-                    "Instead, write the summary as a factual and objective description of the topic and findings. "
-                    "Keep the tone clear and information-focused. The abstract is here: \n\n{abstract}"
+                "content": "Rewrite the following abstract as a 4–5 sentence factual summary, "
+                    "focusing only on the core scientific or technical content. "
+                    "Do not refer to 'the paper', 'this study', 'the abstract', or use any meta phrases. "
+                    "Write as if summarizing a known set of facts.\n\n"
+                    f"{abstract}"
             }],
             temperature=0.5
         )

@@ -51,22 +51,22 @@ document.addEventListener("DOMContentLoaded", () => {
           response.data.forEach((paper, i) => {
             const el = document.createElement("div");
             el.className = "result-card";
-
+          
             const shortAbstract = paper.abstract.slice(0, 250);
             const isLong = paper.abstract.length > 250;
-
+          
             el.innerHTML = `
               <h3>Rank ${i + 1}: ${paper.title}</h3>
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                ${paper.score ? `<p><strong>Score:</strong> ${paper.score}</p>` : ""}
-                <a href="${paper.url}" target="_blank" style="font-size: 14px;">🔗 View paper</a>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <p style="margin: 0;"><strong>Score:</strong> ${paper.score !== undefined ? paper.score : "N/A"}</p>
+                <a href="${paper.url}" target="_blank" style="font-size: 14px; margin-left: auto;">🔗 View paper</a>
               </div>
               <p><em>Summarized Abstract:</em></p>
               <p class="abstract-text">${shortAbstract}${isLong ? "..." : ""}</p>
               ${isLong ? `<button class="toggle-abstract">Show More</button>` : ""}
               <hr />
             `;
-
+          
             if (isLong) {
               const btn = el.querySelector(".toggle-abstract");
               const p = el.querySelector(".abstract-text");
@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 btn.textContent = expanded ? "Show Less" : "Show More";
               });
             }
-
+          
             root.appendChild(el);
           });
 
