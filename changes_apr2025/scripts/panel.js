@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
               <h3>Rank ${i + 1}: ${paper.title}</h3>
               <div style="display: flex; justify-content: space-between; align-items: center;">
                 ${paper.score ? `<p><strong>Score:</strong> ${paper.score}</p>` : ""}
-                <a href="${paper.url}" target="_blank" style="font-size: 14px;">🔗 View</a>
+                <a href="${paper.url}" target="_blank" style="font-size: 14px;">🔗 View paper</a>
               </div>
               <p><em>Summarized Abstract:</em></p>
               <p class="abstract-text">${shortAbstract}${isLong ? "..." : ""}</p>
