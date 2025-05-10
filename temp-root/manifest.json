@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "ScholarSearch",
+  "version": "1.0",
+  "description": "Search and rank academic papers from a sidebar.",
+  "permissions": [
+    "storage",
+    "sidePanel"
+  ],
+  "host_permissions": ["https://chrome-extension-scholary-search.onrender.com/"],
+  "action": {
+    "default_popup": "index.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "side_panel": {
+    "default_path": "index.html"
+  },
+"web_accessible_resources": [
+  {
+    "resources": [
+      "scripts/panel.js",
+      "images/*.png",
+      "images/*.gif"
+    ],
+    "matches": ["<all_urls>"]
+  }
+]
+}
