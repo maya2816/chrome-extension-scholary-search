@@ -40,7 +40,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
               sendResponse({
                 success: true,
                 message: 'Search completed successfully',
-                results: data.results,
+                data: data.results,
               });
             } else {
               sendResponse({
