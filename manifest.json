@@ -1,34 +1,30 @@
 {
   "manifest_version": 3,
-  "name": "Scholarly Search",
+  "name": "ScholarSearch",
   "version": "1.0",
-  "description": "Search Semantic Scholar and summarize with OpenAI.",
-  "offline_enabled": true,
+  "description": "Search and rank academic papers from a sidebar.",
   "permissions": [
     "storage",
-    "sidePanel",
-    "activeTab",
-    "contextMenus"
+    "sidePanel"
   ],
-  "host_permissions": [
-    "https://api.semanticscholar.org/*",
-    "https://api.openai.com/*"
-  ],
+  "host_permissions": ["https://chrome-extension-scholary-search.onrender.com/"],
+  "action": {
+    "default_popup": "index.html"
+  },
   "background": {
-    "service_worker": "background.js",
-    "type": "module"
+    "service_worker": "background.js"
   },
   "side_panel": {
     "default_path": "index.html"
   },
-  "web_accessible_resources": [
-    {
-      "resources": [
-        "scripts/panel.js",
-        "images/*.png",
-        "images/*.gif"
-      ],
-      "matches": ["<all_urls>"]
-    }
-  ]
+"web_accessible_resources": [
+  {
+    "resources": [
+      "scripts/panel.js",
+      "images/*.png",
+      "images/*.gif"
+    ],
+    "matches": ["<all_urls>"]
+  }
+]
 }
