@@ -7,7 +7,7 @@
     "storage",
     "sidePanel"
   ],
-  "host_permissions": ["https://chrome-extension-scholary-search.onrender.com/"],
+  "host_permissions": ["https://chrome-extension-scholary-search-main.onrender.com/"],
   "action": {
     "default_popup": "index.html"
   },
