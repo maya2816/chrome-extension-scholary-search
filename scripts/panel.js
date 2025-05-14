@@ -53,7 +53,8 @@ document.addEventListener("DOMContentLoaded", () => {
           `;
           root.appendChild(summaryCard);
 
-          response.data.forEach((paper, i) => {
+          // Display only the first 10 results
+          response.data.slice(0, 10).forEach((paper, i) => {
             const el = document.createElement("div");
             el.className = "result-card";
           
