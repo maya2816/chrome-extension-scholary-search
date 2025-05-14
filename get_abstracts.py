@@ -47,11 +47,17 @@ if __name__ == "__main__":
     KEYWORDS = os.getenv("KEYWORDS", "")
     keywords = [k.strip() for k in KEYWORDS.split(",") if k.strip()]
 
-    ranked_results = rank_abstracts_with_openai(results, keywords)
+    if results:
+        ranked_results = rank_abstracts_with_openai(results, keywords)
 
-    for i, paper in enumerate(ranked_results, 1):
-        print("=" * 80)
-        print(f"Rank {i}: {paper['title']}")
-        print(f"Score: {paper['score']}")
-        print(f"URL: {paper['url']}")
-        print(f"Abstract:\n{paper['abstract']}\n")
+        for i, paper in enumerate(ranked_results, 1):
+            print("=" * 80)
+            print(f"Rank {i}: {paper['title']}")
+            print(f"Score: {paper['score']}")
+            print(f"URL: {paper['url']}")
+            print(f"Abstract:\n{paper['abstract']}\n")
+
+        print(ranked_results)
+    else:
+        ranked_results = []
+        print("No valid abstracts found.")
