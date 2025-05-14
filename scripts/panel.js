@@ -32,8 +32,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
           if (!response || !Array.isArray(response.data) || response.data.length === 0) {
             root.innerHTML = `
+              <div style="text-align: center; margin-top: 50px;">
               <p>❌ No results found or there was an error.</p>
               <p>Please try a different search query or keyword set.</p>
+              </div>
             `;
             root.style.display = "block";
             fallbackUI.style.display = "none";
