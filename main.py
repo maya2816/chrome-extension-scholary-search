@@ -24,6 +24,8 @@ class QueryRequest(BaseModel):
 @app.post("/rank-abstracts")
 def rank_abstracts(request: QueryRequest):
     abstracts = get_top_10_abstracts(request.query)
+    if not abstracts:
+        return {"results": [], "message": "No abstracts found for the given query."}
     ranked = rank_abstracts_with_openai(abstracts, request.keywords)
     return {"results": ranked}
 
