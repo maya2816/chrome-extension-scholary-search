@@ -56,8 +56,6 @@ if __name__ == "__main__":
             print(f"Score: {paper['score']}")
             print(f"URL: {paper['url']}")
             print(f"Abstract:\n{paper['abstract']}\n")
-
-        print(ranked_results)
     else:
         ranked_results = []
         print("No valid abstracts found.")
